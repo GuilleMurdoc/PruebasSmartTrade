@@ -1,11 +1,12 @@
 package com.example.SpringProjectPrueba.db.models;
 
 import jakarta.persistence.*;
-        import com.example.SpringProjectPrueba.db.*;
-        import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.*;
 
-@Getter
+import java.util.List;
+
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "proveedores")
 public class Proveedor {
@@ -15,9 +16,9 @@ public class Proveedor {
 
     private String name;
 
-    public Proveedor() {
-
-    }
+    @OneToMany(mappedBy = "proveedor")
+    @ToString.Exclude
+    private List<Product> products;
 
     public Proveedor(String name) {
         this.name = name;

@@ -1,14 +1,13 @@
 package com.example.SpringProjectPrueba.db.models;
 
 import jakarta.persistence.*;
-import com.example.SpringProjectPrueba.db.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.*;
 
-@Getter
+@Data
 @Entity
+@NoArgsConstructor
 @Table(name = "product")
-public class Product extends ModelBase {
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -19,10 +18,6 @@ public class Product extends ModelBase {
 
     @ManyToOne
     private Proveedor proveedor;
-
-    public Product() {
-
-    }
 
     public Product(String name, Integer price, Proveedor proveedor) {
         this.name = name;

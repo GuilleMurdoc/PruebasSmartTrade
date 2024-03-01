@@ -1,22 +1,28 @@
 package com.example.SpringProjectPrueba.controllers;
 
+import com.example.SpringProjectPrueba.db.dtos.ProductDTO;
 import com.example.SpringProjectPrueba.db.models.Product;
+import com.example.SpringProjectPrueba.db.models.Proveedor;
 import com.example.SpringProjectPrueba.db.repositories.ProductRepository;
 import com.example.SpringProjectPrueba.db.repositories.ProveedorRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.SpringProjectPrueba.db.dbService;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController()
 public class testController {
-    private final ProductRepository productRepository;
-    private final ProveedorRepository proveedorRepository;
+    private final dbService dbService;
 
-    public testController(ProductRepository productRepository, ProveedorRepository proveedorRepository) {
-        this.productRepository = productRepository;
-        this.proveedorRepository = proveedorRepository;
+    @Autowired
+    public testController(dbService dbService) {
+        this.dbService = dbService;
     }
 
     @GetMapping("/hello")
@@ -35,8 +41,10 @@ public class testController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<Void> crearUsuario() {
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Void> setInitialData() {
+        this.dbService.setInitialData();
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/json")
@@ -46,32 +54,24 @@ public class testController {
         return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/product")
-    public ResponseEntity<String> postProduct(@RequestBody String jsonRequest) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
+    @GetMapping("/getProducts")
+    public ResponseEntity<String> getProducts(){
+        List<ProductDTO> listProduct = this.dbService.getProducts();
 
-        Product product = objectMapper.readValue(jsonRequest, Product.class);
-
-        System.out.println(product.toString());
-
-        System.out.println(this.productRepository.count());
-
-        this.productRepository.save(product);
-
-        System.out.println(this.productRepository.count());
+        listProduct.forEach(el -> {
+            System.out.println(el.toString());
+            System.out.println(el.toJSON());
+        });
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/products")
-    public ResponseEntity<String> getProdcuts() throws JsonProcessingException {
+    @GetMapping("/getProduct")
+    public ResponseEntity<String> getProduct(){
+        ProductDTO product = this.dbService.getFirstProduct();
 
-        System.out.println(this.productRepository.count());
+        if (product == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        this.productRepository.findAll().forEach(pdoruct -> System.out.println(pdoruct.toString()));
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(product.toJSON(), HttpStatus.OK);
     }
-
-
 }
