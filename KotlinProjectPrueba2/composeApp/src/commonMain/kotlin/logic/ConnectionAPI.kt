@@ -3,9 +3,10 @@ package logic
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
-import java.net.ConnectException
 
 fun get(url:String) : String{
+
+
     val client = OkHttpClient()
 
     val request = Request.Builder()

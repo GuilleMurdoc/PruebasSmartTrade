@@ -1,3 +1,4 @@
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -11,9 +12,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import logic.ProductDTO
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import logic.*
 
 
 @OptIn(ExperimentalResourceApi::class)
@@ -44,9 +45,9 @@ fun App() {
 @Composable
 fun prueba(text: String){
     Column {
-        val textoApi = get("http://localhost:8080/")
+        val producto = ProductDTO()
 
-        Text("El texto a mostrar es: ${text} y ${textoApi}")
+        Text("El texto a mostrar es: ${text} y ${producto.nombre}")
     }
 }
 
